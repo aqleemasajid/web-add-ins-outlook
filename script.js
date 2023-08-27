@@ -15,23 +15,30 @@ function updateStatus(message) {
 }
 
 function sendFile() {
-    Office.context.mailbox.item.attachments.getAsync(function (asyncResult) {
-        if (asyncResult.status === Office.AsyncResultStatus.Succeeded) {
-            var attachments = asyncResult.value;
-            attachments.forEach(function (attachment) {
-                attachment.getAttachmentContentAsync(function (contentAsyncResult) {
-                    if (contentAsyncResult.status === Office.AsyncResultStatus.Succeeded) {
-                        var attachmentContent = contentAsyncResult.value.data;
-                        // Process attachment content here
-                        console.log(attachmentContent);
-                    } else {
-                        console.error("Error retrieving attachment content: " + contentAsyncResult.error.message);
-                    }
-                });
-            });
-        } else {
-            console.error("Error retrieving attachments: " + asyncResult.error.message);
-        }
-    });
+    getAllAttachments();
 }
+
+
+async function getAllAttachments() {
+    Office.context.mailbox.item?.getAttachmentsAsync((asyncResult) => {
+    if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+    console.error("Error getting all attachments");
+    } else {
+    console.info(JSON.stringify(asyncResult.value));
+    asyncResult.value.map((i) => {
+    ProcessAttachments(i.id);
+    });
+    }
+    });
+    }
+    
+    async function ProcessAttachments(id) {
+    Office.context.mailbox.item?.getAttachmentContentAsync(id, (asyncResult) => {
+    if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+    console.error(`Error getting attachment content for ${id}`);
+    } else {
+    console.info(`Got attachment content for ${id}`);
+    }
+    });
+    }
 
