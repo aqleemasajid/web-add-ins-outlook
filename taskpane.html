@@ -29,6 +29,8 @@
      */
 
     function getAttachmentToken() {
+                console.log("here");
+
         if (serviceRequest.attachmentToken == "") {
             Office.context.mailbox.getCallbackTokenAsync(attachmentTokenCallback);
         }
