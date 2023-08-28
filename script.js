@@ -21,24 +21,24 @@ function sendFile() {
 
 async function getAllAttachments() {
     Office.context.mailbox.item?.getAttachmentsAsync((asyncResult) => {
-    if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-    console.error("Error getting all attachments");
-    } else {
-    console.info(JSON.stringify(asyncResult.value));
-    asyncResult.value.map((i) => {
-    ProcessAttachments(i.id);
+        if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+            console.error("Error getting all attachments");
+        } else {
+            updateStatus("File object: " + JSON.stringify(asyncResult.value));
+            asyncResult.value.map((i) => {
+                ProcessAttachments(i.id);
+            });
+        }
     });
-    }
-    });
-    }
-    
-    async function ProcessAttachments(id) {
+}
+
+async function ProcessAttachments(id) {
     Office.context.mailbox.item?.getAttachmentContentAsync(id, (asyncResult) => {
-    if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-    console.error(`Error getting attachment content for ${id}`);
-    } else {
-    console.info(`Got attachment content for ${id}`);
-    }
+        if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+            console.error(`Error getting attachment content for ${id}`);
+        } else {
+            console.info(`Got attachment content for ${id}`);
+        }
     });
-    }
+}
 
